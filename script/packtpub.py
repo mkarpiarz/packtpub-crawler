@@ -98,12 +98,11 @@ class Packtpub(object):
     def __parseNewsletterBookInfo(self, soup):
         div_target = soup.find('div', {'id': 'main-book'})
 
-        urlWithTitle = div_target.select('div.nano-book-main-image a')[0]['href']
-        title = urlWithTitle.split('/')[-1].replace('-', ' ').title()
+        title = soup.find('div', {'id': 'title-bar-title'}).h1.string.title()
         claimNode = div_target.select('div.nano-book-text a')
 
         self.info['title'] = title
-        self.info['filename'] = title.replace(' ', '_').encode('ascii', 'ignore')
+        self.info['filename'] = title.replace(' ', '_').replace(':', '').encode('ascii', 'ignore')
         self.info['description'] = div_target.select('div.nano-book-text > div')[0].text.strip()
         self.info['url_image'] = 'https:' + div_target.select('div.nano-book-main-image img')[0]['src']
         self.info['url_claim'] = self.__url_base + claimNode[0]['href']
